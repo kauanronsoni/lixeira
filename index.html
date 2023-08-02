@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Controle de Voz da Lixeira</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 20px;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    #feedback {
+      font-size: 18px;
+      margin: 20px;
+    }
+
+    #button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Controle de Voz da Lixeira</h1>
+  <button id="button">Pressione e Fale</button>
+  <p id="feedback"></p>
+
+  <script>
+    const button = document.getElementById('button');
+    const feedback = document.getElementById('feedback');
+    const recognition = new webkitSpeechRecognition();
+    recognition.continuous = false;
+
+    recognition.onstart = function() {
+      feedback.textContent = 'Fale agora...';
+    };
+
+    recognition.onend = function() {
+      feedback.textContent = '';
+    };
+
+    recognition.onresult = function(event) {
+      const result = event.results[0][0].transcript.toLowerCase();
+      feedback.textContent = 'Você disse: ' + result;
+
+      // Aqui você pode enviar o comando para o módulo ESP-01
+      // utilizando uma requisição HTTP para controlar o servo motor.
+      // Por exemplo, utilizando a função sendCommandToESP(result) mencionada anteriormente.
+
+      // Limpar o feedback após alguns segundos
+      setTimeout(function() {
+        feedback.textContent = '';
+      }, 3000);
+    };
+
+    recognition.onerror = function(event) {
+      console.error('Erro de reconhecimento de voz:', event.error);
+      feedback.textContent = 'Erro de reconhecimento de voz. Tente novamente.';
+    };
+
+    button.addEventListener('click', function() {
+      recognition.start();
+    });
+  </script>
+</body>
+</html>
